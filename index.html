@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BrowAgenda</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .optional-label {
+            color: var(--texto-suave);
+            font-size: 11px;
+            font-weight: 400;
+        }
+
+        .appointment-total {
+            margin-top: 16px;
+            padding: 16px;
+            background: #f9e8ee;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .appointment-total span {
+            font-size: 13px;
+            color: var(--texto-suave);
+        }
+
+        .appointment-total strong {
+            color: #b85f7d;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <div class="brand">
+                <div class="brand-logo">
+                    B
+                </div>
+
+                <div>
+                    <h1>BrowAgenda</h1>
+                    <span>Gabrielli Braghini</span>
+                </div>
+            </div>
+
+
+            <nav class="sidebar-nav">
+
+                <button
+                    class="nav-item active"
+                    data-section="inicio"
+                >
+                    <span>⌂</span>
+                    Início
+                </button>
+
+                <button
+                    class="nav-item"
+                    data-section="agenda"
+                >
+                    <span>▣</span>
+                    Agenda
+                </button>
+
+                <button
+                    class="nav-item"
+                    data-section="clientes"
+                >
+                    <span>♙</span>
+                    Clientes
+                </button>
+
+                <button
+                    class="nav-item"
+                    data-section="servicos"
+                >
+                    <span>◇</span>
+                    Serviços
+                </button>
+
+                <button
+                    class="nav-item"
+                    data-section="faturamento"
+                >
+                    <span>R$</span>
+                    Faturamento
+                </button>
+
+            </nav>
+
+
+            <div class="sidebar-footer">
+                <span>BrowAgenda</span>
+                <small>Gestão simples para seu negócio</small>
+            </div>
+
+        </aside>
+
+
+        <!-- CONTEÚDO -->
+        <main class="main">
+
+            <!-- HEADER -->
+            <header class="topbar">
+
+                <div>
+                    <h2 id="pageTitle">
+                        Início
+                    </h2>
+
+                    <p id="pageSubtitle">
+                        Visão geral do seu negócio
+                    </p>
+                </div>
+
+
+                <button
+                    class="primary-button"
+                    onclick="abrirModal('modalAgendamento')"
+                >
+                    + Novo agendamento
+                </button>
+
+            </header>
+
+
+            <!-- INÍCIO -->
+            <section
+                id="inicio"
+                class="section active"
+            >
+
+                <div class="dashboard-grid">
+
+                    <div class="dashboard-card">
+
+                        <span class="card-label">
+                            Hoje
+                        </span>
+
+                        <strong
+                            id="agendaHoje"
+                            class="card-number"
+                        >
+                            0
+                        </strong>
+
+                        <span class="card-description">
+                            atendimentos
+                        </span>
+
+                    </div>
+
+
+                    <div class="dashboard-card">
+
+                        <span class="card-label">
+                            Este mês
+                        </span>
+
+                        <strong
+                            id="faturamentoInicio"
+                            class="card-number"
+                        >
+                            R$ 0,00
+                        </strong>
+
+                        <span class="card-description">
+                            faturamento
+                        </span>
+
+                    </div>
+
+
+                    <div class="dashboard-card">
+
+                        <span class="card-label">
+                            Clientes
+                        </span>
+
+                        <strong
+                            id="clientesInicio"
+                            class="card-number"
+                        >
+                            0
+                        </strong>
+
+                        <span class="card-description">
+                            cadastradas
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="content-card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <h3>
+                                Próximos atendimentos
+                            </h3>
+
+                            <p>
+                                Seus próximos horários agendados
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="proximosAtendimentos"
+                        class="appointments-list"
+                    ></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- AGENDA -->
+            <section
+                id="agenda"
+                class="section"
+            >
+
+                <div class="content-card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <h3>
+                                Agenda
+                            </h3>
+
+                            <p>
+                                Organize seus atendimentos
+                            </p>
+                        </div>
+
+                        <div class="month-selector">
+                            <button
+                                onclick="mudarMes(-1)"
+                                class="month-button"
+                            >
+                                ‹
+                            </button>
+
+                            <strong id="mesAgenda">
+                                Mês
+                            </strong>
+
+                            <button
+                                onclick="mudarMes(1)"
+                                class="month-button"
+                            >
+                                ›
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="listaAgenda"
+                        class="appointments-list"
+                    ></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- CLIENTES -->
+            <section
+                id="clientes"
+                class="section"
+            >
+
+                <div class="content-card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <h3>
+                                Clientes
+                            </h3>
+
+                            <p>
+                                Cadastre e gerencie suas clientes
+                            </p>
+                        </div>
+
+                        <button
+                            class="primary-button"
+                            onclick="abrirModal('modalCliente')"
+                        >
+                            + Nova cliente
+                        </button>
+
+                    </div>
+
+
+                    <div class="search-box">
+
+                        <input
+                            type="text"
+                            id="buscaCliente"
+                            placeholder="Buscar cliente..."
+                            oninput="renderizarClientes()"
+                        >
+
+                    </div>
+
+
+                    <div
+                        id="listaClientes"
+                        class="clients-list"
+                    ></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- SERVIÇOS -->
+            <section
+                id="servicos"
+                class="section"
+            >
+
+                <div class="content-card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <h3>
+                                Serviços
+                            </h3>
+
+                            <p>
+                                Cadastre os serviços oferecidos
+                            </p>
+                        </div>
+
+                        <button
+                            class="primary-button"
+                            onclick="abrirModal('modalServico')"
+                        >
+                            + Novo serviço
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="listaServicos"
+                        class="services-list"
+                    ></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- FATURAMENTO -->
+            <section
+                id="faturamento"
+                class="section"
+            >
+
+                <div class="content-card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <h3>
+                                Faturamento
+                            </h3>
+
+                            <p>
+                                Acompanhe seus resultados
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="month-selector finance-selector">
+
+                        <label for="mesFaturamento">
+                            Consultar mês
+                        </label>
+
+                        <select
+                            id="mesFaturamento"
+                            onchange="renderizarFaturamentoSelecionado()"
+                        ></select>
+
+                    </div>
+
+
+                    <div class="dashboard-grid finance-grid">
+
+                        <div class="dashboard-card">
+
+                            <span class="card-label">
+                                Faturamento
+                            </span>
+
+                            <strong
+                                id="faturamentoTotal"
+                                class="card-number"
+                            >
+                                R$ 0,00
+                            </strong>
+
+                            <span class="card-description">
+                                no mês
+                            </span>
+
+                        </div>
+
+
+                        <div class="dashboard-card">
+
+                            <span class="card-label">
+                                Atendimentos
+                            </span>
+
+                            <strong
+                                id="atendimentosConcluidos"
+                                class="card-number"
+                            >
+                                0
+                            </strong>
+
+                            <span class="card-description">
+                                concluídos
+                            </span>
+
+                        </div>
+
+
+                        <div class="dashboard-card">
+
+                            <span class="card-label">
+                                Ticket médio
+                            </span>
+
+                            <strong
+                                id="ticketMedio"
+                                class="card-number"
+                            >
+                                R$ 0,00
+                            </strong>
+
+                            <span class="card-description">
+                                por atendimento
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="finance-section">
+
+                        <h3>
+                            Histórico mensal
+                        </h3>
+
+                        <div
+                            id="historicoMensal"
+                            class="history-list"
+                        ></div>
+
+                    </div>
+
+
+                    <div class="finance-section">
+
+                        <h3>
+                            Faturamento por serviço
+                        </h3>
+
+                        <div
+                            id="faturamentoServicos"
+                            class="services-finance-list"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- MODAL AGENDAMENTO -->
+    <div
+        id="modalAgendamento"
+        class="modal"
+    >
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <div>
+                    <h3>
+                        Novo agendamento
+                    </h3>
+
+                    <p>
+                        Cadastre um novo atendimento
+                    </p>
+                </div>
+
+                <button
+                    class="close-button"
+                    onclick="fecharModal('modalAgendamento')"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <form
+                id="formAgendamento"
+                onsubmit="salvarAgendamento(event)"
+            >
+
+                <div class="form-group">
+
+                    <label for="clienteAgendamento">
+                        Cliente
+                    </label>
+
+                    <select
+                        id="clienteAgendamento"
+                        required
+                    >
+                        <option value="">
+                            Selecione uma cliente
+                        </option>
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="servicoAgendamento">
+                        Serviço 1
+                    </label>
+
+                    <select
+                        id="servicoAgendamento"
+                        required
+                        onchange="atualizarValorAgendamento()"
+                    >
+                        <option value="">
+                            Selecione um serviço
+                        </option>
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="servicoAgendamento2">
+                        Serviço 2
+                        <span class="optional-label">
+                            (opcional)
+                        </span>
+                    </label>
+
+                    <select
+                        id="servicoAgendamento2"
+                        onchange="atualizarValorAgendamento()"
+                    >
+                        <option value="">
+                            Nenhum segundo serviço
+                        </option>
+                    </select>
+
+                </div>
+
+
+                <div class="appointment-total">
+
+                    <span>
+                        Total do atendimento
+                    </span>
+
+                    <strong id="valorTotalAgendamento">
+                        R$ 0,00
+                    </strong>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="dataAgendamento">
+                            Data
+                        </label>
+
+                        <input
+                            type="date"
+                            id="dataAgendamento"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="horaAgendamento">
+                            Horário
+                        </label>
+
+                        <input
+                            type="time"
+                            id="horaAgendamento"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="observacaoAgendamento">
+                        Observação
+                    </label>
+
+                    <textarea
+                        id="observacaoAgendamento"
+                        rows="3"
+                        placeholder="Alguma observação..."
+                    ></textarea>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="primary-button full-button"
+                >
+                    Criar agendamento
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- MODAL CLIENTE -->
+    <div
+        id="modalCliente"
+        class="modal"
+    >
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <div>
+                    <h3>
+                        Nova cliente
+                    </h3>
+
+                    <p>
+                        Cadastre uma nova cliente
+                    </p>
+                </div>
+
+                <button
+                    class="close-button"
+                    onclick="fecharModal('modalCliente')"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <form
+                id="formCliente"
+                onsubmit="salvarCliente(event)"
+            >
+
+                <div class="form-group">
+
+                    <label for="nomeCliente">
+                        Nome
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nomeCliente"
+                        placeholder="Nome completo"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="telefoneCliente">
+                        Telefone
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="telefoneCliente"
+                        placeholder="(11) 99999-9999"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="observacaoCliente">
+                        Observação
+                    </label>
+
+                    <textarea
+                        id="observacaoCliente"
+                        rows="3"
+                        placeholder="Observações sobre a cliente..."
+                    ></textarea>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="primary-button full-button"
+                >
+                    Salvar cliente
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- MODAL SERVIÇO -->
+    <div
+        id="modalServico"
+        class="modal"
+    >
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <div>
+                    <h3>
+                        Novo serviço
+                    </h3>
+
+                    <p>
+                        Cadastre um serviço
+                    </p>
+                </div>
+
+                <button
+                    class="close-button"
+                    onclick="fecharModal('modalServico')"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <form
+                id="formServico"
+                onsubmit="salvarServico(event)"
+            >
+
+                <div class="form-group">
+
+                    <label for="nomeServico">
+                        Nome do serviço
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nomeServico"
+                        placeholder="Ex.: Design de sobrancelhas"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="precoServico">
+                        Preço
+                    </label>
+
+                    <input
+                        type="number"
+                        id="precoServico"
+                        placeholder="35.00"
+                        step="0.01"
+                        min="0"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="primary-button full-button"
+                >
+                    Salvar serviço
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- NAVEGAÇÃO MOBILE -->
+    <nav class="mobile-nav">
+
+        <button
+            class="mobile-nav-item active"
+            data-section="inicio"
+        >
+            <span>⌂</span>
+            Início
+        </button>
+
+        <button
+            class="mobile-nav-item"
+            data-section="agenda"
+        >
+            <span>▣</span>
+            Agenda
+        </button>
+
+        <button
+            class="mobile-nav-item"
+            data-section="clientes"
+        >
+            <span>♙</span>
+            Clientes
+        </button>
+
+        <button
+            class="mobile-nav-item"
+            data-section="servicos"
+        >
+            <span>◇</span>
+            Serviços
+        </button>
+
+        <button
+            class="mobile-nav-item"
+            data-section="faturamento"
+        >
+            <span>R$</span>
+            Financeiro
+        </button>
+
+    </nav>
+
+
+    <div
+        id="toast"
+        class="toast"
+    ></div>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
